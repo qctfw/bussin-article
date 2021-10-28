@@ -20,6 +20,7 @@ class CreateArticlesTable extends Migration
             $table->string('slug')->unique();
             $table->text('content');
             $table->string('banner');
+            $table->timestamp('published_at')->nullable();
             $table->timestamps();
         });
     }

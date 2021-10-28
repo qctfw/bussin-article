@@ -9,8 +9,23 @@ class Article extends Model
 {
     use HasFactory;
 
+    protected $casts = [
+        'published_at' => 'datetime',
+    ];
+
     public function category()
     {
-        return $this->hasOne(Category::class);
+        return $this->belongsTo(Category::class);
+    }
+
+    /**
+     * Scope a query to only fetch published articles.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return void
+     */
+    public function scopePublished($query)
+    {
+        $query->whereNotNull('published_at');
     }
 }

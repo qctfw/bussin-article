@@ -21,7 +21,8 @@ class ArticleFactory extends Factory
             'title' => $title,
             'slug' => Str::slug($title),
             'content' => $this->faker->paragraph(4),
-            'banner' => 'https://via.placeholder.com/468x150.png'
+            'banner' => 'https://via.placeholder.com/468x150.png',
+            'published_at' => now()
         ];
     }
 }
