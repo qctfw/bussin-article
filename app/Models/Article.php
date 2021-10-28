@@ -28,4 +28,12 @@ class Article extends Model
     {
         $query->whereNotNull('published_at');
     }
+
+    public function getLinkAttribute()
+    {
+        return route('article.show', [
+            'category' => $this->category->slug,
+            'article' => $this->slug
+        ]);
+    }
 }
