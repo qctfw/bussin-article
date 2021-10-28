@@ -20,7 +20,7 @@ class ArticleFactory extends Factory
             'category_id' => Category::inRandomOrder()->first()->id,
             'title' => $title,
             'slug' => Str::slug($title),
-            'content' => $this->faker->paragraph(4),
+            'content' => $this->faker->paragraph(50),
             'banner' => 'https://via.placeholder.com/468x150.png',
             'published_at' => now()
         ];
