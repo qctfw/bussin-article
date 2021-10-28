@@ -28,7 +28,7 @@ class AdminController extends Controller
     {
         return view('admin.dashboard', [
             'article_count' => $this->article_repository->count(),
-            'category_count' => $this->article_repository->count()
+            'category_count' => $this->category_repository->count()
         ]);
     }
 }
