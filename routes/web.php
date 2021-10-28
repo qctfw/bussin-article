@@ -1,7 +1,10 @@
 <?php
 
+use App\Http\Controllers\AdminArticleController;
+use App\Http\Controllers\AdminCategoryController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,11 +18,16 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::group(['prefix' => '/admin', 'as' => 'admin.'], function () {
+Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
     Route::get('/', [AdminController::class, 'index'])->name('dashboard');
-    Route::get('/articles', [AdminController::class, 'index'])->name('articles');
-    Route::get('/categories', [AdminController::class, 'index'])->name('categories');
+    Route::resource('articles', AdminArticleController::class)->except(['show', 'create']);
+    Route::resource('categories', AdminCategoryController::class)->except(['show', 'create']);
     Route::get('/users', [AdminController::class, 'index'])->name('users');
+});
+
+Route::group(['prefix' => 'auth', 'as' => 'auth.'], function () {
+    Route::get('profile', [UserController::class, 'profile'])->name('profile');
+    Route::get('change-password', [UserController::class, 'changePassword'])->name('change-password');
 });
 
 Route::group(['prefix' => '/', 'as' => 'article.'], function () {
