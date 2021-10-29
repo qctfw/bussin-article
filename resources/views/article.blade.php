@@ -6,7 +6,7 @@
         <div class="text-sm italic text-center">Dipublikasikan tanggal {{ $article->published_at->translatedFormat('d F Y') }}</div>
 
         <div class="flex w-full justify-center">
-            <img src="{{ $article->banner }}" alt="{{ $article->title }}">
+            <img src="/{{ $article->banner }}" alt="{{ $article->title }}">
         </div>
 
         <p class="text-lg text-justify">

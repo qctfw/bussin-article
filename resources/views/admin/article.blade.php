@@ -2,7 +2,7 @@
     <x-slot name="title">Kelola Artikel</x-slot>
 
     <div class="flex flex-row justify-between gap-4">
-        <form method="POST" action="{{ route('admin.articles.store') }}" class="flex flex-col w-1/2 gap-8 p-4 bg-gray-100 shadow-md">
+        <form method="POST" enctype="multipart/form-data" action="{{ route('admin.articles.store') }}" class="flex flex-col w-1/2 gap-8 p-4 bg-gray-100 shadow-md">
             <h3 class="text-xl font-bold">Artikel Baru</h3>
 
             @csrf
@@ -22,6 +22,13 @@
                     @endforeach
                 </select>
                 @error('category')
+                <div class="text-red-600">{{ $message }}</div>
+                @enderror
+            </div>
+            <div class="flex flex-col gap-2">
+                <label for="article-form-banner" class="font-semibold">Banner <x-asterisk /></label>
+                <input id="article-form-banner" type="file" name="banner" class="p-2 bg-gray-200 rounded shadow focus:bg-gray-300" />
+                @error('banner')
                     <div class="text-red-600">{{ $message }}</div>
                 @enderror
             </div>
@@ -37,6 +44,10 @@
                 <button type="submit" name="status" value="publish" class="px-4 py-2 font-semibold text-gray-100 transition-colors bg-blue-600 rounded-lg hover:bg-blue-800">Publikasi</button>
                 <button type="submit" name="status" value="draft" class="px-3 py-1 font-semibold text-gray-100 transition-colors bg-gray-500 rounded-lg hover:bg-gray-700">Simpan ke Draft</button>
             </div>
+
+            @if (session('message') !== null)  
+                <div class="flex p-2 rounded border-2 {{ session('success') ? 'bg-green-400 border-green-500' : 'bg-red-400 border-red-500' }}">{{ session('message') }}</div>
+            @endif
         </form>
 
         <div class="flex flex-col gap-8 p-4 bg-gray-100 shadow-md w-1/2">
@@ -67,7 +78,7 @@
                         <td>
                             <div class="flex flex-row gap-2 px-6 py-4 text-sm font-medium">
                                 <x-button-secondary link="{{ route('admin.articles.edit', $article->id) }}">Edit</x-button-secondary>
-                                <form action="{{ route('admin.articles.destroy', $article->id) }}">
+                                <form method="POST" action="{{ route('admin.articles.destroy', $article->id) }}">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="px-3 py-1 font-semibold text-gray-100 transition-colors bg-red-500 rounded-lg hover:bg-red-700">Hapus</button>

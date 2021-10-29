@@ -1,6 +1,6 @@
 <section class="flex flex-col items-center gap-3">
     <div class="flex justify-center w-full">
-        <img src="{{ $banner }}" alt="{{ $title }}" />
+        <img src="/{{ $banner }}" alt="{{ $title }}" />
     </div>
     <div class="flex flex-col justify-between h-full gap-3 text-center">
         <h3 class="text-xl font-bold">{{ $title }}</h3>

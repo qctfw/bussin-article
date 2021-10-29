@@ -26,6 +26,13 @@
             @enderror
         </div>
         <div class="flex flex-col gap-2">
+            <label for="article-form-banner" class="font-semibold">Banner</label>
+            <input id="article-form-banner" type="file" name="banner" class="p-2 bg-gray-200 rounded shadow focus:bg-gray-300" />
+            @error('banner')
+                <div class="text-red-600">{{ $message }}</div>
+            @enderror
+        </div>
+        <div class="flex flex-col gap-2">
             <label for="article-form-content" class="font-semibold">Konten <x-asterisk /></label>
             <textarea id="article-form-content" name="content" required="required" rows="10" class="p-2 bg-gray-200 focus:bg-gray-300 rounded shadow">{{ $article->content }}</textarea>
             @error('content')

@@ -16,6 +16,10 @@
             <div class="flex flex-row gap-4">
                 <button type="submit" class="px-4 py-2 font-semibold text-gray-100 transition-colors bg-blue-600 rounded-lg hover:bg-blue-800">Simpan</button>
             </div>
+
+            @if (session('message') !== null)  
+                <div class="flex p-2 rounded border-2 {{ session('success') ? 'bg-green-400 border-green-500' : 'bg-red-400 border-red-500' }}">{{ session('message') }}</div>
+            @endif
         </form>
 
         <div class="flex flex-col gap-8 p-4 bg-gray-100 shadow-md w-1/2">
@@ -40,10 +44,10 @@
                         <td>
                             <div class="flex flex-row gap-2 px-6 py-4 text-sm font-medium">
                                 <x-button-secondary link="{{ route('admin.categories.edit', $category->id) }}">Edit</x-button-secondary>
-                                <form action="{{ route('admin.categories.destroy', $category->id) }}">
+                                <form method="POST" action="{{ route('admin.categories.destroy', $category->id) }}">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="px-3 py-1 font-semibold text-gray-100 transition-colors bg-red-500 rounded-lg hover:bg-red-700">Hapus</button>
+                                    <button onclick="javascript:confirm('Yakin ingin menghapus?')" type="submit" class="px-3 py-1 font-semibold text-gray-100 transition-colors bg-red-500 rounded-lg hover:bg-red-700">Hapus</button>
                                 </form>
                             </div>
                         </td>

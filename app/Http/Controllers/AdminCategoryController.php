@@ -2,70 +2,55 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CategoryCreateRequest;
+use App\Http\Requests\CategoryUpdateRequest;
 use App\Models\Category;
-use App\Repositories\Contracts\CategoryRepositoryInterface;
+use App\Services\Contracts\CategoryServiceInterface;
 use Illuminate\Http\Request;
 
 class AdminCategoryController extends Controller
-{   
+{
     /**
-     * @var CategoryRepositoryInterface
+     * @var CategoryServiceInterface
      */
-    private $category_repository;
+    private $category_service;
 
-    public function __construct(CategoryRepositoryInterface $category_repository)
+    public function __construct(CategoryServiceInterface $category_service)
     {
-        $this->category_repository = $category_repository;
+        $this->category_service = $category_service;
     }
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\View\View
      */
     public function index()
     {
         return view('admin.category', [
-            'categories' => $this->category_repository->all()
+            'categories' => $this->category_service->all()
         ]);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\CategoryCreateRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CategoryCreateRequest $request)
     {
-        //
-    }
+        $success = $this->category_service->create($request->name);
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
+        $message = ($success) ? 'Kategori berhasil ditambahkan!' : 'Kategori gagal ditambahkan.';
+
+        return redirect(route('admin.categories.index'))->with('success', $success)->with('message', $message);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
      * @param  Category $category
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\View\View
      */
     public function edit(Category $category)
     {
@@ -77,13 +62,17 @@ class AdminCategoryController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\CategoryUpdateRequest  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(CategoryUpdateRequest $request, $id)
     {
-        //
+        $success = $this->category_service->update($id, $request->name);
+
+        $message = ($success) ? 'Kategori berhasil diubah!' : 'Kategori gagal diubah.';
+
+        return redirect(route('admin.categories.index'))->with('success', $success)->with('message', $message);
     }
 
     /**
@@ -94,6 +83,10 @@ class AdminCategoryController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $success = $this->category_service->delete($id);
+
+        $message = ($success) ? 'Kategori berhasil dihapus!' : 'Kategori gagal dihapus.';
+
+        return redirect(route('admin.categories.index'))->with('success', $success)->with('message', $message);
     }
 }

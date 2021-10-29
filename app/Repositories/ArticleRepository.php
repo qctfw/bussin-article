@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\Article;
 use App\Repositories\Contracts\ArticleRepositoryInterface;
+use Carbon\Carbon;
 
 class ArticleRepository implements ArticleRepositoryInterface
 {
@@ -59,5 +60,46 @@ class ArticleRepository implements ArticleRepositoryInterface
         }
 
         return $query->paginate($per_page);
+    }
+
+    public function save(string $title, string $slug, string $category_id, string $content, string $banner, Carbon $published_at = null): bool
+    {
+        $article = new Article();
+
+        $article->title = $title;
+        $article->slug = $slug;
+        $article->category_id = $category_id;
+        $article->content = $content;
+        $article->banner = $banner;
+        $article->published_at = $published_at;
+
+        return $article->save();
+    }
+
+    public function update(int $id, string $title, string $slug, string $category_id, string $content, string $banner = '', ?Carbon $published_at = null): ?bool
+    {
+        $article = $this->find($id);
+        if (!$article)
+            return null;
+
+        $article->title = $title;
+        $article->slug = $slug;
+        $article->category_id = $category_id;
+        $article->content = $content;
+        $article->published_at = $published_at;
+
+        if ($banner != '')
+            $article->banner = $banner;
+
+        return $article->save();
+    }
+
+    public function delete(int $id): ?bool
+    {
+        $article = $this->find($id);
+        if (!$article)
+            return null;
+
+        return $article->delete();
     }
 }

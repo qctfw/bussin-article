@@ -3,27 +3,28 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ArticleCreateRequest;
+use App\Http\Requests\ArticleUpdateRequest;
 use App\Models\Article;
-use App\Repositories\Contracts\ArticleRepositoryInterface;
-use App\Repositories\Contracts\CategoryRepositoryInterface;
+use App\Services\Contracts\ArticleServiceInterface;
+use App\Services\Contracts\CategoryServiceInterface;
 use Illuminate\Http\Request;
 
 class AdminArticleController extends Controller
 {
     /**
-     * @var ArticleRepositoryInterface
+     * @var ArticleServiceInterface
      */
-    private $article_repository;
-    
-    /**
-     * @var CategoryRepositoryInterface
-     */
-    private $category_repository;
+    private $article_service;
 
-    public function __construct(ArticleRepositoryInterface $article_repository, CategoryRepositoryInterface $category_repository)
+    /**
+     * @var CategoryServiceInterface
+     */
+    private $category_service;
+
+    public function __construct(ArticleServiceInterface $article_service, CategoryServiceInterface $category_service)
     {
-        $this->article_repository = $article_repository;
-        $this->category_repository = $category_repository;
+        $this->article_service = $article_service;
+        $this->category_service = $category_service;
     }
 
     /**
@@ -34,8 +35,8 @@ class AdminArticleController extends Controller
     public function index()
     {
         return view('admin.article', [
-            'articles' => $this->article_repository->paginate(),
-            'categories' => $this->category_repository->all()
+            'articles' => $this->article_service->paginate(),
+            'categories' => $this->category_service->all()
         ]);
     }
 
@@ -47,18 +48,11 @@ class AdminArticleController extends Controller
      */
     public function store(ArticleCreateRequest $request)
     {
-        
-    }
+        $success = $this->article_service->create($request->title, $request->category, $request->content, $request->status, $request->file('banner'));
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
+        $message = ($success) ? 'Artikel berhasil ditambahkan!' : 'Artikel gagal ditambahkan.';
+
+        return redirect(route('admin.articles.index'))->with('success', $success)->with('message', $message);
     }
 
     /**
@@ -71,22 +65,26 @@ class AdminArticleController extends Controller
     {
         return view('admin.article-edit', [
             'article' => $article,
-            'categories' => $this->category_repository->all()
+            'categories' => $this->category_service->all()
         ]);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\ArticleUpdateRequest  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(ArticleUpdateRequest $request, $id)
     {
-        //
-    }
+        $success = $this->article_service->update($id, $request->title, $request->category, $request->content, $request->status, $request->file('banner'));
 
+        $message = ($success) ? 'Artikel berhasil diubah!' : 'Artikel gagal diubah.';
+
+        return redirect(route('admin.articles.index'))->with('success', $success)->with('message', $message);
+    }
+    
     /**
      * Remove the specified resource from storage.
      *
@@ -95,6 +93,10 @@ class AdminArticleController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $success = $this->article_service->delete($id);
+
+        $message = ($success) ? 'Artikel berhasil dihapus!' : 'Artikel gagal dihapus.';
+
+        return redirect(route('admin.articles.index'))->with('success', $success)->with('message', $message);
     }
 }

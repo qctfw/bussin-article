@@ -18,16 +18,25 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
+Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => 'auth'], function () {
     Route::get('/', [AdminController::class, 'index'])->name('dashboard');
     Route::resource('articles', AdminArticleController::class)->except(['show', 'create']);
     Route::resource('categories', AdminCategoryController::class)->except(['show', 'create']);
-    Route::get('/users', [AdminController::class, 'index'])->name('users');
 });
 
 Route::group(['prefix' => 'auth', 'as' => 'auth.'], function () {
-    Route::get('profile', [UserController::class, 'profile'])->name('profile');
-    Route::get('change-password', [UserController::class, 'changePassword'])->name('change-password');
+    Route::group(['middleware' => 'guest'], function () {
+        Route::get('login', [UserController::class, 'loginForm'])->name('login-form');
+        Route::post('login', [UserController::class, 'login'])->name('login');
+    });
+
+    Route::group(['middleware' => 'auth'], function () {
+        Route::get('profile', [UserController::class, 'profile'])->name('profile');
+        Route::get('change-password', [UserController::class, 'changePasswordForm'])->name('change-password-form');
+        Route::patch('change-password', [UserController::class, 'changePassword'])->name('change-password');
+        Route::post('logout', [UserController::class, 'logout'])->name('logout');
+    });
+
 });
 
 Route::group(['prefix' => '/', 'as' => 'article.'], function () {
